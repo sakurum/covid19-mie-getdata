@@ -8,15 +8,15 @@ from bs4 import BeautifulSoup
 
 # export json
 def export_json(obj, filename):
-    f = open(filename, "w")
-    json.dump(
-        obj=obj,
-        fp=f,
-        ensure_ascii=False,
-        indent=4,
-        sort_keys=False,
-        separators=None
-        )
+    with open(filename, "w") as f:
+        json.dump(
+            obj=obj,
+            fp=f,
+            ensure_ascii=False,
+            indent=4,
+            sort_keys=False,
+            separators=None
+            )
 
 # datetimeをjsonにある文字列に変換
 def datetime_to_mystr(date):
@@ -111,7 +111,7 @@ def get_inspections_sammary():
         data_dict_array.append(data_dict)
 
     # dateを作成
-    date_str = "2020\/00\/00 00:00"
+    date_str = "2020/00/00 00:00"
 
     # 辞書を作成
     dict = {"date": date_str, "data": data_dict_array}
@@ -119,10 +119,23 @@ def get_inspections_sammary():
     return dict
 
 
+def get_patients():
+    with open("patients.json", "r") as f:
+        patients = json.load(f)
+        return patients
+
 if __name__ == "__main__":
+    # make data.json
+    inspections_sammary = get_inspections_sammary()
+    patients = get_patients()
 
-    dict = get_inspections_sammary()
-    export_json(dict, "data.json")
+    dict = {
+        "inspections_sammary" : inspections_sammary,
+        "patients" : patients
+    }
 
+    export_json(obj=dict, filename="data.json")
+
+    # news
     newslist = get_whatsnew()
     export_json(newslist[0:3], "news.json")
