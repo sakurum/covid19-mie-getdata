@@ -5,6 +5,10 @@ import datetime
 import requests
 from bs4 import BeautifulSoup
 
+# url
+INDEX_URL = "https://www.pref.mie.lg.jp"
+NEWS_TARGET_URL = "https://www.pref.mie.lg.jp/index.shtm"
+INSPECTIONS_SAMMAERY_TARGET_URL = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00005.htm"
 
 # export json
 def export_json(obj, filename):
@@ -27,7 +31,7 @@ def datetime_to_mystr(date):
 
 # 新着情報をとってくる
 def get_whatsnew():
-    target_url = "https://www.pref.mie.lg.jp/index.shtm"
+    target_url = NEWS_TARGET_URL
     response = requests.get(target_url)
     soup = BeautifulSoup(response.content, features="html.parser")
 
@@ -38,7 +42,7 @@ def get_whatsnew():
     newslist = []
 
     for li in ullist:
-        url = "https://www.pref.mie.lg.jp" + li.a.get("href")
+        url = INDEX_URL + li.a.get("href")
         text = li.a.get_text()
 
         # 最終更新日時を調べる
@@ -55,7 +59,7 @@ def get_whatsnew():
 
 # 検査実施数をとってくる
 def get_inspections_sammary():
-    target_url = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00005.htm"
+    target_url = INSPECTIONS_SAMMAERY_TARGET_URL
     response = requests.get(target_url)
     soup = BeautifulSoup(response.content, features="html.parser")
 
