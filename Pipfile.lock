@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "585edfe1af81212cc06a7ed1a198524cb130cbd44d952bc49a5ae0b27f405cc9"
+            "sha256": "3835eeabe65e9d13177fdfe50cf32633d08ad7ec07974d195a76c37b2a4df8f1"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -24,13 +24,6 @@
             ],
             "index": "pypi",
             "version": "==4.8.2"
-        },
-        "jaconv": {
-            "hashes": [
-                "sha256:2ccdf768da20d55f30e8801e5e2e27783aae1bb29b890e503e1124134d6d09c9"
-            ],
-            "index": "pypi",
-            "version": "==0.2.4"
         },
         "soupsieve": {
             "hashes": [
