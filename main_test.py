@@ -5,14 +5,62 @@ import datetime
 import requests
 from bs4 import BeautifulSoup
 
-target_url = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00005.htm"
-response = requests.get(target_url)
-soup = BeautifulSoup(response.content, features="html.parser")
+
+# export json
+def export_json(obj, filename):
+    f = open(filename, "w")
+    json.dump(
+        obj=obj,
+        fp=f,
+        ensure_ascii=False,
+        indent=4,
+        sort_keys=False,
+        separators=None
+        )
+
+# datetimeをjsonにある文字列に変換
+def datetime_to_mystr(date):
+    # to 2020-03-07T18:00:00.000+09:00
+    # 18時のデータとする。
+    datestr = date.strftime("%Y-%m-%dT%18:%M:%S+09:00")
+    return datestr
+
+# 新着情報をとってくる
+def get_whatsnew():
+    target_url = "https://www.pref.mie.lg.jp/index.shtm"
+    response = requests.get(target_url)
+    soup = BeautifulSoup(response.content, features="html.parser")
+
+    divbox = soup.find(class_="box-emergency-inner")
+    ullist = divbox.ul.find_all("li")
+
+    # newsの辞書型のリスト
+    newslist = []
+
+    for li in ullist:
+        url = "https://www.pref.mie.lg.jp" + li.a.get("href")
+        text = li.a.get_text()
+
+        # 最終更新日時を調べる
+        response = requests.head(url)
+        str = response.headers["Last-Modified"]
+        lastupdate = datetime.datetime.strptime(str, "%a, %d %b %Y %H:%M:%S GMT")
+        date = lastupdate.strftime("%Y/%m/%d")
+
+        news = {"date": date, "url": url, "text": text}
+        newslist.append(news)
+
+    return newslist
 
 
-def get_dataset(table):
+# 検査実施数をとってくる
+def get_inspections_sammary():
+    target_url = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00005.htm"
+    response = requests.get(target_url)
+    soup = BeautifulSoup(response.content, features="html.parser")
+
     # key = ["date", "inspections", "positive", "negative"]
-
+    table = soup.table
     dataset = []
 
     # tableから情報を抜き出す
@@ -55,16 +103,8 @@ def get_dataset(table):
 
         i += 1
 
-    return dataset
 
-def datetime_to_mystr(date):
-    # to 2020-03-07T18:00:00.000+09:00
-    # 18時のデータとする。
-    datestr = date.strftime("%Y-%m-%dT%18:%M:%S+09:00")
-    return datestr
-
-def convert_inspections_sammary(dataset):
-    # data
+    # ここから整形処理
     data_dict_array = []
     for data in dataset:
         data_dict = {"日付": datetime_to_mystr(data[0]), "小計": data[1]}
@@ -78,21 +118,11 @@ def convert_inspections_sammary(dataset):
 
     return dict
 
-def export_json(obj):
-    f = open("date.json", "w")
-    json.dump(
-        obj=obj,
-        fp=f,
-        ensure_ascii=False,
-        indent=4,
-        sort_keys=False,
-        separators=None
-        )
-
 
 if __name__ == "__main__":
-    dataset = get_dataset(soup.table)
 
-    dict = convert_inspections_sammary(dataset)
+    dict = get_inspections_sammary()
+    export_json(dict, "data.json")
 
-    export_json(obj=dict)
+    newslist = get_whatsnew()
+    export_json(newslist, "news.json")
