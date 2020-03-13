@@ -125,4 +125,4 @@ if __name__ == "__main__":
     export_json(dict, "data.json")
 
     newslist = get_whatsnew()
-    export_json(newslist, "news.json")
+    export_json(newslist[0:3], "news.json")
