@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 # url
 INDEX_URL = "https://www.pref.mie.lg.jp"
 NEWS_TARGET_URL = "https://www.pref.mie.lg.jp/index.shtm"
-INSPECTIONS_SAMMAERY_TARGET_URL = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00005.htm"
+INSPECTIONS_SUMMARY_TARGET_URL = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00005.htm"
 
 # import json(template)
 def import_json(filename):
@@ -66,8 +66,8 @@ def get_whatsnew():
 
 
 # 検査実施数をとってくる
-def get_inspections_sammary():
-    target_url = INSPECTIONS_SAMMAERY_TARGET_URL
+def get_inspections_summary():
+    target_url = INSPECTIONS_SUMMARY_TARGET_URL
     response = requests.get(target_url)
     soup = BeautifulSoup(response.content, features="html.parser")
 
@@ -140,11 +140,11 @@ def get_patients():
 if __name__ == "__main__":
     # ---- make data.json ----
     # make update data
-    inspections_sammary = get_inspections_sammary()
+    inspections_summary = get_inspections_summary()
     patients = get_patients()
 
     update_dict = {
-        "inspections_sammary" : inspections_sammary,
+        "inspections_summary" : inspections_summary,
         "patients" : patients
     }
 
