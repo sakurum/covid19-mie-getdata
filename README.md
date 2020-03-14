@@ -14,3 +14,7 @@ $ python3 main.py
 ## 参照先URL
 - [三重県Webサイト](https://www.pref.mie.lg.jp/index.shtm)
 - [新型コロナウイルス感染症検査実施件数](https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00005.htm)
+
+
+## 記事を書きました
+https://qiita.com/sakuranomiyu/items/30c09efaf717b5e82973
