@@ -54,7 +54,9 @@ def get_whatsnew():
         news = {"date": date, "url": url, "text": text}
         newslist.append(news)
 
-    return newslist
+    dict = {"newsItems": newslist[0:3]}
+
+    return dict
 
 
 # 検査実施数をとってくる
@@ -142,4 +144,4 @@ if __name__ == "__main__":
 
     # news
     newslist = get_whatsnew()
-    export_json(newslist[0:3], "news.json")
+    export_json(newslist, "news.json")
