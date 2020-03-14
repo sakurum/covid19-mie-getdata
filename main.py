@@ -10,6 +10,12 @@ INDEX_URL = "https://www.pref.mie.lg.jp"
 NEWS_TARGET_URL = "https://www.pref.mie.lg.jp/index.shtm"
 INSPECTIONS_SAMMAERY_TARGET_URL = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00005.htm"
 
+# import json(template)
+def import_json(filename):
+    with open(filename, "r") as f:
+        dict = json.load(f)
+        return dict
+
 # export json
 def export_json(obj, filename):
     with open(filename, "w") as f:
@@ -124,24 +130,34 @@ def get_inspections_sammary():
 
     return dict
 
-
+# patientsをとってくる
 def get_patients():
     with open("patients.json", "r") as f:
-        patients = json.load(f)
-        return patients
+        patients_dict = json.load(f)
+        return patients_dict
+
 
 if __name__ == "__main__":
-    # make data.json
+    # ---- make data.json ----
+    # make update data
     inspections_sammary = get_inspections_sammary()
     patients = get_patients()
 
-    dict = {
+    update_dict = {
         "inspections_sammary" : inspections_sammary,
         "patients" : patients
     }
 
+    # import template
+    dict = import_json("data_template.json")
+
+    # update
+    dict.update(update_dict)
+
+    # export data.json
     export_json(obj=dict, filename="data.json")
 
-    # news
+
+    # ---- make news.json ----
     newslist = get_whatsnew()
     export_json(newslist, "news.json")
