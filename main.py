@@ -10,6 +10,7 @@ INDEX_URL = "https://www.pref.mie.lg.jp"
 NEWS_TARGET_URL = "https://www.pref.mie.lg.jp/index.shtm"
 INSPECTIONS_SUMMARY_TARGET_URL = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00005.htm"
 
+
 # import json(template)
 def import_json(filename):
     with open(filename, "r") as f:
@@ -27,13 +28,6 @@ def export_json(obj, filename):
             sort_keys=False,
             separators=None
             )
-
-# datetimeをjsonにある文字列に変換
-def datetime_to_mystr(date):
-    # to 2020-03-07T18:00:00.000+09:00
-    # 18時のデータとする。
-    datestr = date.strftime("%Y-%m-%dT%18:%M:%S+09:00")
-    return datestr
 
 # 新着情報をとってくる
 def get_whatsnew():
@@ -60,6 +54,7 @@ def get_whatsnew():
         news = {"date": date, "url": url, "text": text}
         newslist.append(news)
 
+    # 上位3件のみ抜粋
     dict = {"newsItems": newslist[0:3]}
 
     return dict
@@ -97,9 +92,9 @@ def get_inspections_summary():
         data[0] = datetime.datetime.strptime("2020/"+date_str, "%Y/%m/%d")
 
         # 数の処理
-        data[1] = data[1].replace("件", "")
-        data[2] = data[2].replace("件", "")
-        data[3] = data[3].replace("件", "")
+        data[1] = int(data[1].replace("件", ""))
+        data[2] = int(data[2].replace("件", ""))
+        data[3] = int(data[3].replace("件", ""))
 
         dataset.append(data)
 
@@ -119,11 +114,13 @@ def get_inspections_summary():
     # ここから整形処理
     data_dict_array = []
     for data in dataset:
-        data_dict = {"日付": datetime_to_mystr(data[0]), "小計": data[1]}
+        # 18時のデータとする(Webサイトの更新が18時なので)
+        mydatestr = data[0].strftime("%Y-%m-%dT%18:%M:%S+09:00")
+        data_dict = {"日付": mydatestr, "小計": data[1]}
         data_dict_array.append(data_dict)
 
-    # dateを作成
-    date_str = "2020/00/00 00:00"
+    # dateを作成(データのうち最も新しいものの日付+1日とする)
+    date_str = (dataset[-1][0]+datetime.timedelta(days=1)).strftime("%Y/%m/%d %H:%M")
 
     # 辞書を作成
     dict = {"date": date_str, "data": data_dict_array}
@@ -136,18 +133,22 @@ def get_patients():
         patients_dict = json.load(f)
         return patients_dict
 
+# patients_summaryをとってくる
+def get_patients_summary():
+    with open("patients_summary.json", "r") as f:
+        patients_summary_dict = json.load(f)
+        return patients_summary_dict
 
+
+# main
 if __name__ == "__main__":
     # ---- make data.json ----
     # make update data
-    inspections_summary = get_inspections_summary()
-    patients = get_patients()
-
     update_dict = {
-        "inspections_summary" : inspections_summary,
-        "patients" : patients
+        "inspections_summary" : get_inspections_summary(),
+        "patients" : get_patients(),
+        "patients_summary" : get_patients_summary()
     }
-
     # import template
     dict = import_json("data_template.json")
 
