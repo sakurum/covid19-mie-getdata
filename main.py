@@ -8,7 +8,14 @@ from bs4 import BeautifulSoup
 # url
 INDEX_URL = "https://www.pref.mie.lg.jp"
 NEWS_TARGET_URL = "https://www.pref.mie.lg.jp/index.shtm"
-INSPECTIONS_SAMMAERY_TARGET_URL = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00005.htm"
+INSPECTIONS_SUMMARY_TARGET_URL = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00005.htm"
+
+
+# import json(template)
+def import_json(filename):
+    with open(filename, "r") as f:
+        dict = json.load(f)
+        return dict
 
 # export json
 def export_json(obj, filename):
@@ -21,13 +28,6 @@ def export_json(obj, filename):
             sort_keys=False,
             separators=None
             )
-
-# datetimeをjsonにある文字列に変換
-def datetime_to_mystr(date):
-    # to 2020-03-07T18:00:00.000+09:00
-    # 18時のデータとする。
-    datestr = date.strftime("%Y-%m-%dT%18:%M:%S+09:00")
-    return datestr
 
 # 新着情報をとってくる
 def get_whatsnew():
@@ -54,12 +54,15 @@ def get_whatsnew():
         news = {"date": date, "url": url, "text": text}
         newslist.append(news)
 
-    return newslist
+    # 上位3件のみ抜粋
+    dict = {"newsItems": newslist[0:3]}
+
+    return dict
 
 
 # 検査実施数をとってくる
-def get_inspections_sammary():
-    target_url = INSPECTIONS_SAMMAERY_TARGET_URL
+def get_inspections_summary():
+    target_url = INSPECTIONS_SUMMARY_TARGET_URL
     response = requests.get(target_url)
     soup = BeautifulSoup(response.content, features="html.parser")
 
@@ -89,9 +92,9 @@ def get_inspections_sammary():
         data[0] = datetime.datetime.strptime("2020/"+date_str, "%Y/%m/%d")
 
         # 数の処理
-        data[1] = data[1].replace("件", "")
-        data[2] = data[2].replace("件", "")
-        data[3] = data[3].replace("件", "")
+        data[1] = int(data[1].replace("件", ""))
+        data[2] = int(data[2].replace("件", ""))
+        data[3] = int(data[3].replace("件", ""))
 
         dataset.append(data)
 
@@ -111,35 +114,51 @@ def get_inspections_sammary():
     # ここから整形処理
     data_dict_array = []
     for data in dataset:
-        data_dict = {"日付": datetime_to_mystr(data[0]), "小計": data[1]}
+        # 18時のデータとする(Webサイトの更新が18時なので)
+        mydatestr = data[0].strftime("%Y-%m-%dT%18:%M:%S+09:00")
+        data_dict = {"日付": mydatestr, "小計": data[1]}
         data_dict_array.append(data_dict)
 
-    # dateを作成
-    date_str = "2020/00/00 00:00"
+    # dateを作成(データのうち最も新しいものの日付+1日とする)
+    date_str = (dataset[-1][0]+datetime.timedelta(days=1)).strftime("%Y/%m/%d %H:%M")
 
     # 辞書を作成
     dict = {"date": date_str, "data": data_dict_array}
 
     return dict
 
-
+# patientsをとってくる
 def get_patients():
     with open("patients.json", "r") as f:
-        patients = json.load(f)
-        return patients
+        patients_dict = json.load(f)
+        return patients_dict
 
+# patients_summaryをとってくる
+def get_patients_summary():
+    with open("patients_summary.json", "r") as f:
+        patients_summary_dict = json.load(f)
+        return patients_summary_dict
+
+
+# main
 if __name__ == "__main__":
-    # make data.json
-    inspections_sammary = get_inspections_sammary()
-    patients = get_patients()
-
-    dict = {
-        "inspections_sammary" : inspections_sammary,
-        "patients" : patients
+    # ---- make data.json ----
+    # make update data
+    update_dict = {
+        "inspections_summary" : get_inspections_summary(),
+        "patients" : get_patients(),
+        "patients_summary" : get_patients_summary()
     }
+    # import template
+    dict = import_json("data_template.json")
 
+    # update
+    dict.update(update_dict)
+
+    # export data.json
     export_json(obj=dict, filename="data.json")
 
-    # news
+
+    # ---- make news.json ----
     newslist = get_whatsnew()
-    export_json(newslist[0:3], "news.json")
+    export_json(newslist, "news.json")
