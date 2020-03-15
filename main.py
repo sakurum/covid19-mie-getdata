@@ -129,13 +129,13 @@ def get_inspections_summary():
 
 # patientsをとってくる
 def get_patients():
-    with open("patients.json", "r") as f:
+    with open("./patients.json", "r") as f:
         patients_dict = json.load(f)
         return patients_dict
 
 # patients_summaryをとってくる
 def get_patients_summary():
-    with open("patients_summary.json", "r") as f:
+    with open("./patients_summary.json", "r") as f:
         patients_summary_dict = json.load(f)
         return patients_summary_dict
 
@@ -150,15 +150,15 @@ if __name__ == "__main__":
         "patients_summary" : get_patients_summary()
     }
     # import template
-    dict = import_json("data_template.json")
+    dict = import_json("./data_template.json")
 
     # update
     dict.update(update_dict)
 
     # export data.json
-    export_json(obj=dict, filename="data.json")
+    export_json(obj=dict, filename="./data/data.json")
 
 
     # ---- make news.json ----
     newslist = get_whatsnew()
-    export_json(newslist, "news.json")
+    export_json(newslist, "./data/news.json")
