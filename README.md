@@ -2,7 +2,12 @@
 [三重県版の新型コロナウイルス感染症対策サイト](https://github.com/FlexiblePrintedCircuits/covid19-mie)に使うためのjsonファイルを作成するプログラム
 
 ## 動作
-`main.py`を実行すると、三重県Webサイトと下記のjsonファイルから情報を取得し、`data.json`と`news.json`を作成します。
+
+### GitHub Actionsによる定期実行について
+6時間に一度、`main.py`が実行され、[data.json](https://raw.githubusercontent.com/sakurum/covid19-mie-getdata/gh-pages/data.json)と[news.json](https://raw.githubusercontent.com/sakurum/covid19-mie-getdata/gh-pages/news.json)が更新されます。
+
+### 単体の動作について
+`main.py`が実行されると、三重県Webサイトと下記のjsonファイルから情報を取得し、`data.json`と`news.json`を作成します。
 
 `data.json`の雛形として`data_template.json`を読み込みます。
 
