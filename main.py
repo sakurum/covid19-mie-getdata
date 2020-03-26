@@ -92,7 +92,10 @@ def get_inspections_summary():
         data[0] = datetime.datetime.strptime("2020/"+date_str, "%Y/%m/%d")
 
         # 数の処理
-        data[1] = int(data[1].replace("件", ""))
+        # data[1]についてはカッコ内の保険適用件数を除外
+        #（find("件")が見つからない場合-1を返しdata[1][0:-1]になるが、これは全体のスライスなので問題ない）
+        data[1] = int(data[1][:data[1].find("件")].replace("件", ""))
+
         data[2] = int(data[2].replace("件", ""))
         data[3] = int(data[3].replace("件", ""))
 
