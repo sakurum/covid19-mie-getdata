@@ -159,9 +159,9 @@ if __name__ == "__main__":
     dict.update(update_dict)
 
     # export data.json
-    export_json(obj=dict, filename="./data.json")
+    export_json(obj=dict, filename="./data/data.json")
 
 
     # ---- make news.json ----
     newslist = get_whatsnew()
-    export_json(newslist, "./news.json")
+    export_json(newslist, "./data/news.json")
