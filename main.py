@@ -147,6 +147,19 @@ def get_patients_summary():
 if __name__ == "__main__":
     # ---- make data.json ----
     # make update data
+    """
+        "contacts",
+        "querents",
+        "patients",
+        "patients_summary",
+        "discharges_summary",
+        "inspections",
+        "inspections_summary",
+        "better_patients_summary",
+        "lastUpdate",
+        "main_summary"
+    """
+    
     update_dict = {
         "inspections_summary" : get_inspections_summary(),
         "patients" : get_patients(),
