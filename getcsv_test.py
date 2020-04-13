@@ -9,28 +9,29 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
-url = "https://www.pref.mie.lg.jp/common/content/000885246.csv"
 
-
-def get_csv(url):
+def get_csv():
+    url = "https://www.pref.mie.lg.jp/common/content/000885246.csv"
     df = pandas.read_csv(url, encoding="shift_jis")
     json = df.to_json(orient="records")
+
+    df.rename(columns={"検査件数": "小計"}, inplace=True)
+    df["日付"] = df["日付"].apply(val_to_datestr)
+
     pprint.pprint(df)
-    # pprint.pprint(str(json).encode().decode("unicode-escape"))
 
-def csv_to_dict(csvfile):
+    print(df[["日付", "小計"]])
+    list = df[["小計", "日付"]].to_dict(orient="records")
 
-    json_list = []
-    json_data = {}
+    pprint.pprint(list)
 
-    data = []
-    with open(csvfile, "r", encoding="shift_jis") as f:
-        for line in csv.DictReader(f):
-            data.append(line)
 
-        dict = {"csvfile": data}
+def val_to_datestr(val):
+    m = re.findall(r"\d+", val)
+    date = datetime.datetime(int(m[0]), int(m[1]), int(m[2]))
+    datestr = date.strftime("%Y-%m-%dT00:00:00.000+09:00")
 
-    return dict
+    return datestr
 
 def get_lastupdate():
     target_url = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00022.htm"
@@ -50,4 +51,4 @@ def get_lastupdate():
     return lastupdate
 
 if __name__ == "__main__":
-    print(get_lastupdate())
+    get_csv()
