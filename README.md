@@ -39,8 +39,6 @@ newsItems | [三重県Webサイト]("https://www.pref.mie.lg.jp/index.shtm")
 
 ## 使い方
 ```bash
-$ pipenv install
-
 $ python3 main.py
 ```
 
