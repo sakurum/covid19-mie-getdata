@@ -5,10 +5,16 @@ import datetime
 import requests
 from bs4 import BeautifulSoup
 
+import csv
+import pandas
+import re
+
 # url
 INDEX_URL = "https://www.pref.mie.lg.jp"
 NEWS_TARGET_URL = "https://www.pref.mie.lg.jp/index.shtm"
-INSPECTIONS_SUMMARY_TARGET_URL = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00005.htm"
+
+# 使ってない
+# INSPECTIONS_SUMMARY_TARGET_URL = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00005.htm"
 
 
 # import json(template)
@@ -28,6 +34,35 @@ def export_json(obj, filename):
             sort_keys=False,
             separators=None
             )
+
+
+# yyyy/mm/ddを変換
+def val_to_datestr(val):
+    m = re.findall(r"\d+", val)
+    date = datetime.datetime(int(m[0]), int(m[1]), int(m[2]))
+    datestr = date.strftime("%Y-%m-%dT00:00:00.000+09:00")
+
+    return datestr
+
+
+# オープンデータの最終更新日をとってくる
+def get_lastupdate():
+    target_url = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00022.htm"
+    response = requests.get(target_url)
+    soup = BeautifulSoup(response.content, features="html.parser")
+
+    text = soup.find(string="最終更新日").next
+
+    # 全角 to 半角
+    text = text.translate(str.maketrans({chr(0xFF01 + i): chr(0x21 + i) for i in range(94)}))
+    # 数字のみ取得
+    m = re.findall(r"\d+", text)
+
+    date = datetime.datetime(int(m[0])+2018, int(m[1]), int(m[2]))
+    lastupdate = date.strftime("%Y/%m/%d 00:00")
+
+    return lastupdate
+
 
 # 新着情報をとってくる
 def get_whatsnew():
@@ -61,6 +96,24 @@ def get_whatsnew():
 
 
 # 検査実施数をとってくる
+def get_inspections_summary():
+    csv_url = "https://www.pref.mie.lg.jp/common/content/000885246.csv"
+
+    # 必要な要素の抽出
+    df = pandas.read_csv(csv_url, encoding="shift_jis")
+    df.rename(columns={"検査件数": "小計"}, inplace=True)
+    df["日付"] = df["日付"].apply(val_to_datestr)
+
+    # jsonに書き出すリスト
+    datalist = df[["小計", "日付"]].to_dict(orient="records")
+
+    # 辞書を作成
+    dict = {"date": get_lastupdate(), "data": datalist}
+
+    return dict
+
+"""
+# オープンデータから取得するように変更したので廃止
 def get_inspections_summary():
     target_url = INSPECTIONS_SUMMARY_TARGET_URL
     response = requests.get(target_url)
@@ -129,6 +182,7 @@ def get_inspections_summary():
     dict = {"date": date_str, "data": data_dict_array}
 
     return dict
+"""
 
 # patientsをとってくる
 def get_patients():
@@ -159,7 +213,7 @@ if __name__ == "__main__":
         "lastUpdate",
         "main_summary"
     """
-    
+
     update_dict = {
         "inspections_summary" : get_inspections_summary(),
         "patients" : get_patients(),
