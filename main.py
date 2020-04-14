@@ -94,7 +94,7 @@ def get_whatsnew():
 
     return dict
 
-def get_lastupdate():
+def get_nowstr():
     return datetime.datetime.now().strftime("%Y/%m/%d %H:%M")
 
 # 検査実施数をとってくる
@@ -116,9 +116,28 @@ def get_inspections_summary():
 
 # patientsをとってくる
 def get_patients():
-    with open("./patients.json", "r") as f:
-        patients_dict = json.load(f)
-        return patients_dict
+    csv_url = "https://www.pref.mie.lg.jp/common/content/000883953.csv"
+    df = pandas.read_csv(csv_url, encoding="shift_jis")
+
+    df.replace({pandas.np.nan: None}, inplace=True)
+    df.rename(
+        columns={
+            "公表年月日": "リリース日",
+            "退院済フラグ": "退院",
+            "発症_年月日": "date"
+        },
+        inplace=True
+    )
+    df["リリース日"] = df["リリース日"].apply(val_to_datestr)
+
+    output_columns = ["リリース日", "居住地", "年代", "性別", "退院", "date"]
+    datalist = df[output_columns].to_dict(orient="records")
+
+    print(datalist)
+
+    dict = {"date": get_lastupdate(), "data": datalist}
+
+    return dict
 
 # patients_summaryをとってくる
 def get_patients_summary():
@@ -148,7 +167,7 @@ if __name__ == "__main__":
         "inspections_summary" : get_inspections_summary(),
         "patients" : get_patients(),
         "patients_summary" : get_patients_summary(),
-        "lastUpdate": get_lastupdate()
+        "lastUpdate": get_nowstr()
     }
     # import template
     dict = import_json("./data_template.json")
