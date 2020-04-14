@@ -133,8 +133,6 @@ def get_patients():
     output_columns = ["リリース日", "居住地", "年代", "性別", "退院", "date"]
     datalist = df[output_columns].to_dict(orient="records")
 
-    print(datalist)
-
     dict = {"date": get_lastupdate(), "data": datalist}
 
     return dict
@@ -160,7 +158,8 @@ if __name__ == "__main__":
         "inspections_summary",
         "better_patients_summary",
         "lastUpdate",
-        "main_summary"
+        "main_summary",
+        "nowinfectedperson"
     """
 
     update_dict = {
