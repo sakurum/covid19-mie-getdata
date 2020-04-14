@@ -16,6 +16,20 @@ NEWS_TARGET_URL = "https://www.pref.mie.lg.jp/index.shtm"
 # 使ってない
 # INSPECTIONS_SUMMARY_TARGET_URL = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00005.htm"
 
+def get_opendata_url():
+    target_url = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00022.htm"
+    response = requests.get(target_url)
+    soup = BeautifulSoup(response.content, features="html.parser")
+
+    url_dict = {}
+    ins = soup.find("a", string="新型コロナウイルス感染症検査実施件数一覧").get("href")
+    pat = soup.find("a", string="県内で発生した事例一覧").get("href")
+
+    url_dict["inspections_summary_url"] = "https://www.pref.mie.lg.jp"+ins
+    url_dict["patients_url"] = "https://www.pref.mie.lg.jp"+pat
+
+    return url_dict
+
 
 # import json(template)
 def import_json(filename):
@@ -98,9 +112,7 @@ def get_nowstr():
     return datetime.datetime.now().strftime("%Y/%m/%d %H:%M")
 
 # 検査実施数をとってくる
-def get_inspections_summary():
-    csv_url = "https://www.pref.mie.lg.jp/common/content/000885246.csv"
-
+def get_inspections_summary(csv_url):
     # 必要な要素の抽出
     df = pandas.read_csv(csv_url, encoding="shift_jis")
     df.rename(columns={"検査件数": "小計"}, inplace=True)
@@ -115,8 +127,7 @@ def get_inspections_summary():
     return dict
 
 # patientsをとってくる
-def get_patients():
-    csv_url = "https://www.pref.mie.lg.jp/common/content/000883953.csv"
+def get_patients(csv_url):
     df = pandas.read_csv(csv_url, encoding="shift_jis")
 
     df.replace({pandas.np.nan: None}, inplace=True)
@@ -162,9 +173,11 @@ if __name__ == "__main__":
         "nowinfectedperson"
     """
 
+    url_dict = get_opendata_url()
+
     update_dict = {
-        "inspections_summary" : get_inspections_summary(),
-        "patients" : get_patients(),
+        "inspections_summary" : get_inspections_summary(url_dict["inspections_summary_url"]),
+        "patients" : get_patients(url_dict["patients_url"]),
         "patients_summary" : get_patients_summary(),
         "lastUpdate": get_nowstr()
     }
@@ -181,3 +194,5 @@ if __name__ == "__main__":
     # ---- make news.json ----
     newslist = get_whatsnew()
     export_json(newslist, "./data/news.json")
+
+    get_opendata_url()
