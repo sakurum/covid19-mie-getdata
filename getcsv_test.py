@@ -9,6 +9,9 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
+def show_csv(url):
+    df = pandas.read_csv(url, encoding="shift_jis")
+    pprint.pprint(df)
 
 def get_csv():
     url = "https://www.pref.mie.lg.jp/common/content/000885246.csv"
@@ -51,4 +54,4 @@ def get_lastupdate():
     return lastupdate
 
 if __name__ == "__main__":
-    get_csv()
+    show_csv("https://www.pref.mie.lg.jp/common/content/000883953.csv")
