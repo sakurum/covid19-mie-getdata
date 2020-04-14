@@ -94,6 +94,8 @@ def get_whatsnew():
 
     return dict
 
+def get_lastupdate():
+    return datetime.datetime.now().strftime("%Y/%m/%d %H:%M")
 
 # 検査実施数をとってくる
 def get_inspections_summary():
@@ -217,7 +219,8 @@ if __name__ == "__main__":
     update_dict = {
         "inspections_summary" : get_inspections_summary(),
         "patients" : get_patients(),
-        "patients_summary" : get_patients_summary()
+        "patients_summary" : get_patients_summary(),
+        "lastUpdate": get_lastupdate()
     }
     # import template
     dict = import_json("./data_template.json")
