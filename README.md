@@ -2,7 +2,12 @@
 [三重県版の新型コロナウイルス感染症対策サイト](https://github.com/FlexiblePrintedCircuits/covid19-mie)に使うためのjsonファイルを作成するプログラム
 
 ## 動作
-`main.py`を実行すると、三重県Webサイトと下記のjsonファイルから情報を取得し、`data.json`と`news.json`を作成します。
+
+### GitHub Actionsによる定期実行について
+6時間に一度、`main.py`が実行され、[data.json](https://raw.githubusercontent.com/sakurum/covid19-mie-getdata/gh-pages/data.json)と[news.json](https://raw.githubusercontent.com/sakurum/covid19-mie-getdata/gh-pages/news.json)が更新されます。
+
+### 単体の動作について
+`main.py`が実行されると、三重県Webサイトと下記のjsonファイルから情報を取得し、`data.json`と`news.json`を作成します。
 
 `data.json`の雛形として`data_template.json`を読み込みます。
 
@@ -11,16 +16,20 @@
 ## 取得する情報のソースについて
 以下のように対応します。
 
+まず、[新型コロナウイルス感染症検査実施件数一覧及び県内で発生した事例一覧](https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000071_00022.htm)から、新型コロナウイルス感染症検査実施件数一覧と県内で発生した事例一覧のcsvファイルのリンクを取得します。（何故かファイルのリンクが更新の度に変わる仕様だったので...）
+
+それから、新型コロナウイルス感染症検査実施件数一覧と県内で発生した事例一覧のcsvファイルを読み込み、データを取得します。
+
 #### data.json
 data.jsonの項目（出力） | 情報ソース（入力）
 --- | ---
 contacts | なし（data_template.jsonそのまま）
 querents | なし（data_template.jsonそのまま）
-patients | [県内で発生した事例一覧](https://www.pref.mie.lg.jp/common/content/000883953.csv)
+patients | 県内で発生した事例一覧
 patients_summary | patients_summary.json
 discharges_summary | なし（data_template.jsonそのまま）
 inspections | なし（data_template.jsonそのまま）
-inspections_summary | [新型コロナウイルス感染症検査実施件数一覧](https://www.pref.mie.lg.jp/common/content/000885246.csv)
+inspections_summary | 新型コロナウイルス感染症検査実施件数一覧
 better_patients_summary | なし（data_template.jsonそのまま）
 lastUpdate | main.pyが実行された時刻
 main_summary | なし（data_template.jsonそのまま）
