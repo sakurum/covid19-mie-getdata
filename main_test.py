@@ -54,4 +54,5 @@ def get_lastupdate():
     return lastupdate
 
 if __name__ == "__main__":
-    show_csv("https://www.pref.mie.lg.jp/common/content/000883953.csv")
+    show_csv("https://www.pref.mie.lg.jp/common/content/000885246.csv")
+    print(datetime.datetime.now().strftime("%Y/%m/%d %H:%M"))
