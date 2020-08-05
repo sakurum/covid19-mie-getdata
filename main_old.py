@@ -156,14 +156,6 @@ def get_patients_summary():
 
 
 
-
-class DataManager:
-    def __init__(self):
-        pass
-
-    def dump_json():
-
-
 # main
 if __name__ == "__main__":
     # ---- make data.json ----
@@ -182,6 +174,7 @@ if __name__ == "__main__":
         "nowinfectedperson"
     """
 
+    """
     url_dict = get_opendata_url()
 
     update_dict = {
@@ -205,3 +198,6 @@ if __name__ == "__main__":
     export_json(newslist, "./data/news.json")
 
     get_opendata_url()
+    """
+
+    print(get_whatsnew())
