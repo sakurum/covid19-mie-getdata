@@ -155,6 +155,15 @@ def get_patients_summary():
         return patients_summary_dict
 
 
+
+
+class DataManager:
+    def __init__(self):
+        pass
+
+    def dump_json():
+
+
 # main
 if __name__ == "__main__":
     # ---- make data.json ----
