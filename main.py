@@ -20,6 +20,7 @@ class DataManager():
 
     def _update(self):
         self._update_patients()
+        self._update_patients_summary()
         self._update_inspections_summary()
         self._update_nowinfectedperson()
         self._dump_json(self._data, DATA_FILENAME)
@@ -82,9 +83,27 @@ class DataManager():
 
 
     # 陽性患者が確認された件数
-    def _get_patients_summary(self):
+    def _update_patients_summary(self):
         # patientsのcsvからカウントする
-        pass
+        url = "https://www.pref.mie.lg.jp/common/content/000896797.csv"
+
+        df = pandas.read_csv(url, encoding="shift_jis")
+        df.replace({pandas.np.nan: None}, inplace=True)
+        df.rename(
+            columns={
+                "公表年月日": "リリース日"
+            },
+            inplace=True
+        )
+        df["リリース日"] = df["リリース日"].apply(self._val2datastr)
+        d = df["リリース日"].value_counts().to_dict()
+
+        data = []
+        for key, value in d.items():
+            data.append({"日付": key, "小計": value})
+
+        dict = {"date": self._get_lastupdate(), "data": data}
+        self._data["patients_summary"].update(dict)
 
 
     # 検査実施数
