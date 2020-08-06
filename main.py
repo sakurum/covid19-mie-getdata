@@ -77,12 +77,21 @@ class DataManager():
         response = requests.get(url)
         soup = BeautifulSoup(response.content, features="html.parser")
 
+        # 陽性患者数を取得
         nip_str = soup.find("span", string="陽性患者数").next_sibling.next_sibling.find_all("span")[1].text
         nip_str = nip_str.replace("名", "")
         nip_num = int(nip_str.translate(str.maketrans({chr(0xFF01 + i): chr(0x21 + i) for i in range(94)})))
-        return nip_num
+        print(nip_num)
+
+        # その日付を取得
+        datestr = re.findall(r"（令和.年.月.日現在）", soup.find("div", class_="main-text").text)[0]
+        datestr = datestr.translate(str.maketrans({chr(0xFF01 + i): chr(0x21 + i) for i in range(94)}))
+        m = re.findall(r"\d+", datestr)
+        date = datetime.date(int(m[0])+2018, int(m[1]), int(m[2])).strftime("%Y-%m-%dT00:00:00.000+09:00")
+
+        print(date)
 
 
 if __name__ == "__main__":
     dm = DataManager()
-    print(dm._get_nowinfectedperson())
+    dm._get_nowinfectedperson()
