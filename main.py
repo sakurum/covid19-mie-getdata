@@ -8,13 +8,42 @@ import pandas
 import re
 from bs4 import BeautifulSoup
 
+
+DATA_FILENAME = "data/data.json"
+NEWS_FILENAME = "data/news.json"
+
 class DataManager():
     def __init__(self):
-        pass
+        self._data = self._load_json(DATA_FILENAME)
+        self._news = self._load_json(NEWS_FILENAME)
 
 
     def _update(self):
-        pass
+        self._update_patients()
+        self._update_inspections_summary()
+        self._update_nowinfectedperson()
+        self._dump_json(self._data, DATA_FILENAME)
+
+        self._update_whatsnew()
+        self._dump_json(self._news, NEWS_FILENAME)
+
+
+    def _load_json(self, filename):
+        with open(filename, "r") as fp:
+            data = json.load(fp)
+            return data
+
+
+    def _dump_json(self, data, filename):
+        with open(filename, "w") as fp:
+            json.dump(
+                obj=data,
+                fp=fp,
+                ensure_ascii=False,
+                indent=4,
+                sort_keys=False,
+                separators=None
+            )
 
 
     # グラフに用いる最終更新日時
@@ -31,7 +60,7 @@ class DataManager():
 
 
     # 陽性患者の属性
-    def _get_patients(self):
+    def _update_patients(self):
         url = "https://www.pref.mie.lg.jp/common/content/000896797.csv"
 
         df = pandas.read_csv(url, encoding="shift_jis")
@@ -49,7 +78,7 @@ class DataManager():
         datalist = df[output_columns].to_dict(orient="records")
 
         dict = {"date": self._get_lastupdate(), "data": datalist}
-        return dict
+        self._data["patients"].update(dict)
 
 
     # 陽性患者が確認された件数
@@ -59,7 +88,7 @@ class DataManager():
 
 
     # 検査実施数
-    def _get_inspections_summary(self):
+    def _update_inspections_summary(self):
         url = "https://www.pref.mie.lg.jp/common/content/000896967.csv"
 
         df = pandas.read_csv(url, encoding="shift_jis")
@@ -68,11 +97,11 @@ class DataManager():
         datalist = df[["小計", "日付"]].to_dict(orient="records")
 
         dict = {"date": self._get_lastupdate(), "data": datalist}
-        return dict
+        self._data["inspections_summary"].update(dict)
 
 
     # 日別の陽性患者数
-    def _get_nowinfectedperson(self):
+    def _update_nowinfectedperson(self):
         url = "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000066_00002.htm"
         response = requests.get(url)
         soup = BeautifulSoup(response.content, features="html.parser")
@@ -81,7 +110,6 @@ class DataManager():
         nip_str = soup.find("span", string="陽性患者数").next_sibling.next_sibling.find_all("span")[1].text
         nip_str = nip_str.replace("名", "")
         nip_num = int(nip_str.translate(str.maketrans({chr(0xFF01 + i): chr(0x21 + i) for i in range(94)})))
-        print(nip_num)
 
         # その日付を取得
         datestr = re.findall(r"（令和.年.月.日現在）", soup.find("div", class_="main-text").text)[0]
@@ -89,9 +117,38 @@ class DataManager():
         m = re.findall(r"\d+", datestr)
         date = datetime.date(int(m[0])+2018, int(m[1]), int(m[2])).strftime("%Y-%m-%dT00:00:00.000+09:00")
 
-        print(date)
+        self._data["nowinfectedperson"]["data"].append({"日付": date, "小計": nip_num})
+        self._data["nowinfectedperson"]["date"] = self._get_lastupdate()
+
+
+    # 新着情報を取得
+    def _update_whatsnew(self):
+        url = "https://www.pref.mie.lg.jp/index.shtm"
+        response = requests.get(url)
+
+        soup = BeautifulSoup(response.content, features="html.parser")
+        divbox = soup.find(class_="box-emergency-inner")
+        ullist = divbox.ul.find_all("li")
+
+        newslist = []
+        for li in ullist:
+            url = "https://www.pref.mie.lg.jp" + li.a.get("href")
+            text = li.a.get_text()
+
+            # 最終更新日時を調べる
+            response = requests.head(url)
+            str = response.headers["Last-Modified"]
+            lastupdate = datetime.datetime.strptime(str, "%a, %d %b %Y %H:%M:%S GMT")
+            date = lastupdate.strftime("%Y/%m/%d")
+
+            news = {"date": date, "url": url, "text": text}
+            newslist.append(news)
+
+        # 上位3件のみ抜粋
+        dict = {"newsItems": newslist[0:3]}
+        self._news.update(dict)
 
 
 if __name__ == "__main__":
     dm = DataManager()
-    dm._get_nowinfectedperson()
+    dm._update()
