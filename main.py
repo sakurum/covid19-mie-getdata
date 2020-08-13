@@ -96,7 +96,7 @@ class DataManager():
             inplace=True
         )
         df["リリース日"] = df["リリース日"].apply(self._val2datastr)
-        d = df["リリース日"].value_counts(.to_dict()
+        d = df["リリース日"].value_counts().to_dict()
 
         data = []
         for key, value in d.items():
