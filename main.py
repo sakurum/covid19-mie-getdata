@@ -131,7 +131,7 @@ class DataManager():
         nip_num = int(nip_str.translate(str.maketrans({chr(0xFF01 + i): chr(0x21 + i) for i in range(94)})))
 
         # その日付を取得
-        datestr = re.findall(r"（令和.年.月.日現在）", soup.find("div", class_="main-text").text)[0]
+        datestr = re.findall(r"入退院状況（令和[0-9 ０-９]{1,2}年[0-9 ０-９]{1,2}月[0-9 ０-９]{1,2}日現在）", soup.find("div", class_="main-text").text)[0]
         datestr = datestr.translate(str.maketrans({chr(0xFF01 + i): chr(0x21 + i) for i in range(94)}))
         m = re.findall(r"\d+", datestr)
         date = datetime.date(int(m[0])+2018, int(m[1]), int(m[2])).strftime("%Y-%m-%dT00:00:00.000+09:00")
