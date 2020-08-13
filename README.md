@@ -3,6 +3,8 @@
 
 ## 動作
 
+:warning: [WIP] 以下の記事の時点から大幅に内容を更新しています。READMEは現在作成中ですので、main.pyをご確認下さい。
+<!--
 ### GitHub Actionsによる定期実行について
 6時間に一度、`main.py`が実行され、[data.json](https://raw.githubusercontent.com/sakurum/covid19-mie-getdata/gh-pages/data.json)と[news.json](https://raw.githubusercontent.com/sakurum/covid19-mie-getdata/gh-pages/news.json)が更新されます。
 
@@ -54,6 +56,7 @@ $ python3 main.py
 
 （現状では一部しか対応しておらず、例外処理も行っていません。）
 
+-->
 
 ## 記事を書きました
 https://qiita.com/sakuranomiyu/items/30c09efaf717b5e82973
