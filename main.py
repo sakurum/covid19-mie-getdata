@@ -8,6 +8,8 @@ import pandas
 import re
 from bs4 import BeautifulSoup
 
+import pprint
+
 
 DATA_FILENAME = "data/data.json"
 NEWS_FILENAME = "data/news.json"
@@ -103,6 +105,15 @@ class DataManager():
             data.append({"日付": key, "小計": value})
 
         data.sort(key=lambda x: x["日付"])
+
+        # データがない日付は小計を0にする
+        begin = datetime.datetime.strptime(data[0]["日付"], "%Y-%m-%dT00:00:00.000+09:00")
+        end = datetime.datetime.strptime(data[-1]["日付"], "%Y-%m-%dT00:00:00.000+09:00")
+
+        for i in range((end - begin).days):
+            key = (begin + datetime.timedelta(days=i)).strftime("%Y-%m-%dT00:00:00.000+09:00")
+            if key != data[i]["日付"]:
+                data.insert(i, {"日付": key, "小計": 0})
 
         dict = {"date": self._get_lastupdate(), "data": data}
         self._data["patients_summary"].update(dict)
