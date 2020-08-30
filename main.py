@@ -102,6 +102,8 @@ class DataManager():
         for key, value in d.items():
             data.append({"日付": key, "小計": value})
 
+        data.sort(key=lambda x: x["日付"])
+
         dict = {"date": self._get_lastupdate(), "data": data}
         self._data["patients_summary"].update(dict)
 
