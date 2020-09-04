@@ -25,6 +25,7 @@ class DataManager():
         self._update_patients_summary()
         self._update_inspections_summary()
         self._update_nowinfectedperson()
+        self._update_last_update()
         self._dump_json(self._data, DATA_FILENAME)
 
         self._update_whatsnew()
@@ -151,6 +152,10 @@ class DataManager():
 
         self._data["nowinfectedperson"]["data"].append({"日付": date, "小計": nip_num})
         self._data["nowinfectedperson"]["date"] = self._get_lastupdate()
+
+
+    def _update_last_update(self):
+        self._data["lastUpdate"] = datetime.datetime.now().strftime("%Y/%m/%d %H:%M")
 
 
     # 新着情報を取得
