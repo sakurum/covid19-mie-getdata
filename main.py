@@ -150,6 +150,9 @@ class DataManager():
         m = re.findall(r"\d+", datestr)
         date = datetime.date(int(m[0])+2018, int(m[1]), int(m[2])).strftime("%Y-%m-%dT00:00:00.000+09:00")
 
+        if self._data["nowinfectedperson"]["data"][-1]["日付"] == date:
+            return
+
         self._data["nowinfectedperson"]["data"].append({"日付": date, "小計": nip_num})
         self._data["nowinfectedperson"]["date"] = self._get_lastupdate()
 
