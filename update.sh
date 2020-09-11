@@ -7,5 +7,6 @@ git remote set-url origin https://sakurum:${UPDATE_TOKEN}@github.com/sakurum/cov
 
 git checkout master
 git stage data/*
+git pull
 git commit -m "[updater] `date +%Y/%m/%d` の更新"
 git push
