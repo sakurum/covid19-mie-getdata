@@ -32,4 +32,6 @@ jobs:
     - name: commit and push
       env:
         github_token: ${{ secrets.UPDATE_TOKEN}}
-      run: ./update.sh
+      run: |
+        chmod +x ./update.sh
+        ./update.sh
