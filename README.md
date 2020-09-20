@@ -1,6 +1,11 @@
 # covid19-mie-getdata
 [三重県版の新型コロナウイルス感染症対策サイト](https://github.com/FlexiblePrintedCircuits/covid19-mie)に使うためのjsonファイルを作成するプログラム
 
+https://sakurum.github.io/covid19-mie-getdata/data.json
+https://sakurum.github.io/covid19-mie-getdata/news.json
+
+を自動更新して公開しています。
+
 ## 動作
 
 :warning: [WIP] 以下の記事の時点から大幅に内容を更新しています。READMEは現在作成中ですので、main.pyをご確認下さい。
