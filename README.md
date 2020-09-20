@@ -7,7 +7,17 @@
 <!--
 ### GitHub Actionsによる定期実行について
 6時間に一度、`main.py`が実行され、[data.json](https://raw.githubusercontent.com/sakurum/covid19-mie-getdata/gh-pages/data.json)と[news.json](https://raw.githubusercontent.com/sakurum/covid19-mie-getdata/gh-pages/news.json)が更新されます。
+-->
 
+更新しているデータ
+| key | 状況 |
+| --- | --- |
+| patients | 正常（2020/09/20）|
+| patients_summary | 正常（2020/09/20）|
+| inspections_summary | 正常（2020/09/20）|
+| nowinfectedperson | 取得できていない |
+
+<!--
 ### 単体の動作について
 `main.py`が実行されると、三重県Webサイトと下記のjsonファイルから情報を取得し、`data.json`と`news.json`を作成します。
 
