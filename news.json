@@ -1,19 +1,19 @@
 {
     "newsItems": [
         {
-            "date": "2020/12/03",
+            "date": "2020/12/04",
+            "url": "https://www.pref.mie.lg.jp/common/content/000923614.pdf",
+            "text": "【県民の皆様へ】当面の間、三重県庁への来庁をお控えいただきますようお願いします"
+        },
+        {
+            "date": "2020/12/04",
             "url": "https://www.pref.mie.lg.jp/common/content/000920989.pdf",
             "text": "三重県指針ver.7～県民の皆さまへ　命と健康を守るために～"
         },
         {
-            "date": "2020/11/30",
+            "date": "2020/12/04",
             "url": "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000066_00005.htm#県民の皆様へ",
             "text": "新型コロナウイルス感染症に関する知事から県民へのメッセージ"
-        },
-        {
-            "date": "2020/12/03",
-            "url": "https://www.pref.mie.lg.jp/YAKUMUS/HP/m0068000066_00002.htm",
-            "text": "新型コロナウイルス感染症患者の発生について（１２月３日）"
         }
     ]
 }
