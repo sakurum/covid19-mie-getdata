@@ -1,19 +1,19 @@
 {
     "newsItems": [
         {
-            "date": "2021/02/04",
+            "date": "2021/02/09",
             "url": "https://www.pref.mie.lg.jp/covid19.shtm",
-            "text": "三重県新型コロナウイルス「緊急警戒宣言」"
+            "text": "三重県新型コロナウイルス「緊急警戒宣言」（２月８日～３月７日）"
         },
         {
-            "date": "2021/01/14",
-            "url": "https://www.pref.mie.lg.jp/MOVIE/l1000200206.htm",
-            "text": "三重県新型コロナウイルス「緊急警戒宣言」（動画）"
+            "date": "2021/02/08",
+            "url": "https://www.pref.mie.lg.jp/MOVIE/l1000200210.htm",
+            "text": "三重県新型コロナウイルス「緊急警戒宣言」延長にかかる知事からのメッセージ（動画）"
         },
         {
-            "date": "2021/02/01",
-            "url": "https://www.pref.mie.lg.jp/SHINSAN/HP/p0016400027.htm",
-            "text": "三重県時短要請協力金について"
+            "date": "2021/02/05",
+            "url": "https://www.pref.mie.lg.jp/SHINSAN/HP/p0016400029.htm",
+            "text": "三重県新型コロナ危機対応事業継続・緊急支援補助金の公募開始"
         }
     ]
 }
