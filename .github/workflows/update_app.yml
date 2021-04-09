@@ -31,11 +31,11 @@ jobs:
         publish_dir: ./data
     - name: commit and push
       env:
-        github_token: ${{ secrets.UPDATE_TOKEN}}
+        bot_pass: ${{ secrets.BOT_PASS }}
       run: |
-        git config --global user.name "sakurum"
-        git config --global user.email "sakuranomiyu@gmail.com"
-        git remote set-url origin https://sakurum:${UPDATE_TOKEN}@github.com/sakurum/covid19-mie-getdata.git
+        git config --global user.name ${ secrets.BOT_NAME }
+        git config --global user.email ${ secrets.BOT_EMAIL }
+        git remote set-url origin https://${ secrets.BOT_NAME }:${ secrets.BOT_PASS }@github.com/sakurum/covid19-mie-getdata.git
         git checkout master
         git stage data/*
         git pull
