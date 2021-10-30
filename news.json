@@ -2,6 +2,11 @@
     "newsItems": [
         {
             "date": "2021/10/29",
+            "url": "https://www.pref.mie.lg.jp/TOPICS/m0034100024.htm",
+            "text": "三重県職員が新型コロナウイルス感染症の陽性者になったことに伴う三重県四日市建設事務所への入所制限と三重県四日市庁舎への来庁にかかるお願いについて"
+        },
+        {
+            "date": "2021/10/30",
             "url": "https://www.pref.mie.lg.jp/common/content/000982116.pdf",
             "text": "三重県指針ver.13～県民の皆さまへ　命と健康を守るために～"
         },
@@ -9,11 +14,6 @@
             "date": "2021/10/04",
             "url": "https://www.pref.mie.lg.jp/TOPICS/m0004500272.htm",
             "text": "三重とこわか国体・三重とこわか大会の延期申請の見送りについて（令和3年9月28日）"
-        },
-        {
-            "date": "2021/10/26",
-            "url": "https://www.pref.mie.lg.jp/common/content/000979643.pdf",
-            "text": "愛知・岐阜・三重 東海３県知事共同メッセージ"
         }
     ]
 }
